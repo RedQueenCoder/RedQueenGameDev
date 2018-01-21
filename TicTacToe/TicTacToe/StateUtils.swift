@@ -9,13 +9,19 @@
 import Foundation
 
 enum GameState {
-    case NotPlaying
-    case PlayerA
-    case PlayerB
+    case notPlaying
+    case playerA
+    case playerB
 }
 
-enum BoardState {
-    case NotSelected
-    case PlayerA
-    case PlayerB
+enum TileState {
+    case notSelected
+    case playerA
+    case playerB
+}
+
+enum GameEndState {
+    case playerAWin
+    case playerBWin
+    case draw
 }
