@@ -21,7 +21,7 @@ class TicTacToeTests: XCTestCase {
         super.tearDown()
     }
     
-    func testWins() {
+    func testAWins() {
         let win_top:[TileState] = [
             .playerA,       .playerA,       .playerA,
             .notSelected,   .playerB,       .notSelected,
@@ -29,5 +29,16 @@ class TicTacToeTests: XCTestCase {
         ]
         let tiles = PlayerTiles.from(player: .playerA, board: win_top)
         XCTAssertEqual(tiles.isWin(), GameEndState.playerAWin)
+    }
+
+    func testDraw() {
+        let draw:[TileState] = [
+            .playerA,       .playerB,       .playerA,
+            .playerA,       .playerB,       .playerA,
+            .playerB,       .playerA,       .playerB
+
+        ]
+        let tiles = PlayerTiles.from(player: .playerA, board: draw)
+        XCTAssertEqual(tiles.isWin(), GameEndState.draw)
     }
 }
