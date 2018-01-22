@@ -7,6 +7,7 @@
 //
 
 import XCTest
+@testable import TicTacToe
 
 class TicTacToeTests: XCTestCase {
     
@@ -20,16 +21,24 @@ class TicTacToeTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testAWins() {
+        let win_top:[TileState] = [
+            .playerA,       .playerA,       .playerA,
+            .notSelected,   .playerB,       .notSelected,
+            .playerB,       .notSelected,   .notSelected
+        ]
+        let tiles = PlayerTiles.from(player: .playerA, board: win_top)
+        XCTAssertEqual(tiles.isWin(), GameEndState.playerAWin)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+
+    func testDraw() {
+        let draw:[TileState] = [
+            .playerA,       .playerB,       .playerA,
+            .playerA,       .playerB,       .playerA,
+            .playerB,       .playerA,       .playerB
+
+        ]
+        let tiles = PlayerTiles.from(player: .playerA, board: draw)
+        XCTAssertEqual(tiles.isWin(), GameEndState.draw)
     }
-    
 }

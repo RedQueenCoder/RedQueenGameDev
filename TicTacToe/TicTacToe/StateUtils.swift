@@ -8,19 +8,19 @@
 
 import Foundation
 
-enum GameState {
+public enum GameState {
     case notPlaying
     case playerA
     case playerB
 }
 
-enum TileState {
+public enum TileState {
     case notSelected
     case playerA
     case playerB
 }
 
-enum GameEndState {
+public enum GameEndState {
     case playerAWin
     case playerBWin
     case draw
