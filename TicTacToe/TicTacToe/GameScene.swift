@@ -27,11 +27,44 @@ class GameScene: SKScene {
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {return}
+        let location = touch.location(in: self)
+        let rawNodes = nodes(at: location)
+        let tappedNodes = rawNodes.filter{return $0.name != nil}
         
+        guard let node = tappedNodes.first as? SKSpriteNode else {return}
+        
+        if board[tiles.index(of: node)!] == .notSelected {
+            switch currentPlayer {
+            case .playerA:
+                node.color = UIColor.black
+                board[tiles.index(of: node)!] = .playerA
+            case .playerB:
+                node.color = UIColor.red
+                board[tiles.index(of: node)!] = .playerB
+            case .notPlaying:
+                node.color = UIColor.white
+                board[tiles.index(of: node)!] = .notSelected
+            }
+        }
+        
+        if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
+            switch isWin {
+            case .playerAWin:
+                print("Player A wins")
+            case .playerBWin:
+                print("Player B wins")
+            case .draw:
+                print("No one wins. Everyone gets a participation trophy")
+            }
+        }
+        
+        currentPlayer = switchPlayer(currentPlayer: currentPlayer)
     }
     
     override init(size: CGSize) {
         super.init(size: size)
+        isUserInteractionEnabled = true
         
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
@@ -52,7 +85,7 @@ class GameScene: SKScene {
         for yIndex in 0..<3 {
             for xIndex in 0..<3 {
                 let sprite = SKSpriteNode()
-                sprite.color = UIColor.red
+                sprite.color = UIColor.white
                 sprite.size = CGSize(width: tileSize, height: tileSize)
                 sprite.name = "Tile\(tileCounter)"
                 
@@ -62,13 +95,14 @@ class GameScene: SKScene {
                 sprite.anchorPoint = CGPoint.zero
                 sprite.position = CGPoint(x: xPosition, y: yPosition)
                 boardLayer.addChild(sprite)
+                tiles.append(sprite)
 
                 tileCounter += 1
             }
         }
         
-        //        board = resetBoard()
-        //        currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+                board = resetBoard()
+                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
     }
     
     required init?(coder aDecoder: NSCoder) {
