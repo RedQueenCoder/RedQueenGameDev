@@ -14,6 +14,8 @@
 		7B3B92B52005B2A900E64C70 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7B3B92B42005B2A900E64C70 /* Assets.xcassets */; };
 		7B3B92B82005B2A900E64C70 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7B3B92B62005B2A900E64C70 /* LaunchScreen.storyboard */; };
 		7B3B92C02005B36000E64C70 /* StateUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B92BF2005B36000E64C70 /* StateUtils.swift */; };
+		7B510D93204C76AF00C1333B /* pop.wav in Resources */ = {isa = PBXBuildFile; fileRef = 7B510D92204C76AF00C1333B /* pop.wav */; };
+		7B510D95204C79D700C1333B /* Carpe Diem.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 7B510D94204C79D700C1333B /* Carpe Diem.mp3 */; };
 		7B95088A2014DA8A008EC413 /* TicTacToeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B9508892014DA8A008EC413 /* TicTacToeTests.swift */; };
 		7B9508912014DA98008EC413 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B92A72005B2A900E64C70 /* AppDelegate.swift */; };
 		7B9508922014DA9B008EC413 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3B92AD2005B2A900E64C70 /* GameScene.swift */; };
@@ -41,6 +43,8 @@
 		7B3B92B72005B2A900E64C70 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7B3B92B92005B2A900E64C70 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7B3B92BF2005B36000E64C70 /* StateUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateUtils.swift; sourceTree = "<group>"; };
+		7B510D92204C76AF00C1333B /* pop.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = pop.wav; sourceTree = "<group>"; };
+		7B510D94204C79D700C1333B /* Carpe Diem.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Carpe Diem.mp3"; sourceTree = "<group>"; };
 		7B9508872014DA8A008EC413 /* TicTacToeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TicTacToeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B9508892014DA8A008EC413 /* TicTacToeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicTacToeTests.swift; sourceTree = "<group>"; };
 		7B95088B2014DA8A008EC413 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -89,12 +93,22 @@
 				7B3B92AD2005B2A900E64C70 /* GameScene.swift */,
 				7B3B92BF2005B36000E64C70 /* StateUtils.swift */,
 				7B3B92AF2005B2A900E64C70 /* GameViewController.swift */,
+				7B510D91204C769300C1333B /* Sounds */,
 				7B3B92B12005B2A900E64C70 /* Main.storyboard */,
 				7B3B92B42005B2A900E64C70 /* Assets.xcassets */,
 				7B3B92B62005B2A900E64C70 /* LaunchScreen.storyboard */,
 				7B3B92B92005B2A900E64C70 /* Info.plist */,
 			);
 			path = TicTacToe;
+			sourceTree = "<group>";
+		};
+		7B510D91204C769300C1333B /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				7B510D94204C79D700C1333B /* Carpe Diem.mp3 */,
+				7B510D92204C76AF00C1333B /* pop.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		7B9508882014DA8A008EC413 /* TicTacToeTests */ = {
@@ -191,7 +205,9 @@
 			files = (
 				7B3B92B32005B2A900E64C70 /* Main.storyboard in Resources */,
 				7B3B92B52005B2A900E64C70 /* Assets.xcassets in Resources */,
+				7B510D93204C76AF00C1333B /* pop.wav in Resources */,
 				7B3B92B82005B2A900E64C70 /* LaunchScreen.storyboard in Resources */,
+				7B510D95204C79D700C1333B /* Carpe Diem.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

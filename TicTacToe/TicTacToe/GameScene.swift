@@ -34,20 +34,33 @@ class GameScene: SKScene {
         let tappedNodes = rawNodes.filter{return $0.name != nil}
         
         guard let node = tappedNodes.first as? SKSpriteNode else {return}
+        let nodeSize = node.size
+        let largeNodeSize = CGSize(width: nodeSize.width + 30, height: nodeSize.height + 30)
+        let spritePosition = CGPoint(x: node.size.width / 2, y: node.size.height / 2)
+        
+        // Actions
+        let fadeAction = SKAction.fadeIn(withDuration: 0.75)
+        let scaleUpAction = SKAction.scale(to: largeNodeSize, duration: 0.5)
+        let scaleDownAction = SKAction.scale(to: nodeSize, duration: 0.25)
+        let soundEffect = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
+        let scaleSequence = SKAction.sequence([scaleUpAction, soundEffect, scaleDownAction])
+        let actionGroup = SKAction.group([fadeAction, scaleSequence])
         
         if board[tiles.index(of: node)!] == .notSelected {
             switch currentPlayer {
             case .playerA:
                 let playerTile = SKSpriteNode(imageNamed: "pastry_donut_320")
-                playerTile.scale(to: node.size)
-                playerTile.position = CGPoint(x: node.size.width / 2, y: node.size.height / 2)
+                playerTile.setScale(0)
+                playerTile.position = spritePosition
                 node.addChild(playerTile)
+                playerTile.run(actionGroup)
                 board[tiles.index(of: node)!] = .playerA
             case .playerB:
                 let playerTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
-                playerTile.scale(to: node.size)
-                playerTile.position = CGPoint(x: node.size.width / 2, y: node.size.height / 2)
+                playerTile.setScale(0)
+                playerTile.position = spritePosition
                 node.addChild(playerTile)
+                playerTile.run(actionGroup)
                 board[tiles.index(of: node)!] = .playerB
             case .notPlaying:
                 node.color = UIColor.white
@@ -101,7 +114,7 @@ class GameScene: SKScene {
         for yIndex in 0..<3 {
             for xIndex in 0..<3 {
                 let sprite = SKSpriteNode()
-                sprite.color = UIColor.white
+                sprite.color = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.4)
                 sprite.size = CGSize(width: tileSize, height: tileSize)
                 sprite.name = "Tile\(tileCounter)"
                 
@@ -120,6 +133,8 @@ class GameScene: SKScene {
         board = resetBoard()
         currentPlayer = switchPlayer(currentPlayer: currentPlayer)
         label.text = "\(currentPlayer.rawValue)'s Turn"
+        
+        run(SKAction.playSoundFileNamed("Carpe Diem.mp3", waitForCompletion: false))
     }
     
     required init?(coder aDecoder: NSCoder) {
