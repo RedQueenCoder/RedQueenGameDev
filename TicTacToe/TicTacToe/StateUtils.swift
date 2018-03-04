@@ -8,10 +8,10 @@
 
 import Foundation
 
-enum GameState {
+enum GameState: String {
     case notPlaying
-    case playerA
-    case playerB
+    case playerA = "Player A"
+    case playerB = "Player B"
 }
 
 enum TileState {
@@ -20,10 +20,10 @@ enum TileState {
     case playerB
 }
 
-enum GameEndState {
-    case playerAWin
-    case playerBWin
-    case draw
+enum GameEndState: String {
+    case playerAWin = "Player A Wins!"
+    case playerBWin = "Player B Wins!"
+    case draw = "Draw!"
 }
 
 // Reset Board

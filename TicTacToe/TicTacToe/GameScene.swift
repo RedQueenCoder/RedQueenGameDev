@@ -18,6 +18,7 @@ class GameScene: SKScene {
     // View Properties
     let boardLayer = SKSpriteNode()
     var tiles:[SKSpriteNode] = []
+    let label = SKLabelNode(fontNamed: "Noteworthy-Bold")
     let outerBorderPadding:CGFloat = 30.0
     let betweenTilesPadding:CGFloat = 15.0
 
@@ -37,10 +38,16 @@ class GameScene: SKScene {
         if board[tiles.index(of: node)!] == .notSelected {
             switch currentPlayer {
             case .playerA:
-                node.color = UIColor.black
+                let playerTile = SKSpriteNode(imageNamed: "pastry_donut_320")
+                playerTile.scale(to: node.size)
+                playerTile.position = CGPoint(x: node.size.width / 2, y: node.size.height / 2)
+                node.addChild(playerTile)
                 board[tiles.index(of: node)!] = .playerA
             case .playerB:
-                node.color = UIColor.red
+                let playerTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
+                playerTile.scale(to: node.size)
+                playerTile.position = CGPoint(x: node.size.width / 2, y: node.size.height / 2)
+                node.addChild(playerTile)
                 board[tiles.index(of: node)!] = .playerB
             case .notPlaying:
                 node.color = UIColor.white
@@ -49,17 +56,12 @@ class GameScene: SKScene {
         }
         
         if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
-            switch isWin {
-            case .playerAWin:
-                print("Player A wins")
-            case .playerBWin:
-                print("Player B wins")
-            case .draw:
-                print("No one wins. Everyone gets a participation trophy")
-            }
+            label.text = isWin.rawValue
+            isUserInteractionEnabled = false
+        } else {
+            currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+            label.text = "\(currentPlayer.rawValue)'s Turn"
         }
-        
-        currentPlayer = switchPlayer(currentPlayer: currentPlayer)
     }
     
     override init(size: CGSize) {
@@ -68,7 +70,8 @@ class GameScene: SKScene {
         
         anchorPoint = CGPoint(x: 0.5, y: 0.5)
         
-        let background = SKSpriteNode(color: UIColor.white, size: size)
+        let background = SKSpriteNode(imageNamed: "bg_ipad_portrait")
+        background.zPosition = -1
         addChild(background)
 
         let boardSize = size.width
@@ -77,6 +80,19 @@ class GameScene: SKScene {
         boardLayer.size = CGSize(width: boardSize, height: boardSize)
         boardLayer.color = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.2)
         addChild(boardLayer)
+        
+        let labelBackground = SKSpriteNode(imageNamed: "headerBacking")
+        labelBackground.zPosition = 2
+        labelBackground.size = CGSize(width: boardSize, height: 60.0)
+        labelBackground.position = CGPoint(x: 0.0, y: (boardSize / 2.0) + 100)
+        labelBackground.anchorPoint = CGPoint(x: 0.5, y: 0.5)
+        addChild(labelBackground)
+        
+        label.fontColor = SKColor.black
+        label.fontSize = 40
+        label.zPosition = 10
+        label.position = CGPoint(x: 0.0, y: -20.0)
+        labelBackground.addChild(label)
         
         let padding = (outerBorderPadding * 2) + (betweenTilesPadding * 2)
         let tileSize = (boardSize - CGFloat(padding)) / 3
@@ -101,8 +117,9 @@ class GameScene: SKScene {
             }
         }
         
-                board = resetBoard()
-                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+        board = resetBoard()
+        currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+        label.text = "\(currentPlayer.rawValue)'s Turn"
     }
     
     required init?(coder aDecoder: NSCoder) {
