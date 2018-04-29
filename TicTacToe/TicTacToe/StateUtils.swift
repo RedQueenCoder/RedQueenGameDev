@@ -131,3 +131,59 @@ func checkForWin(currentPlayer: GameState, board: [TileState]) -> GameEndState? 
     gameEnd = .draw
     return gameEnd
 }
+
+// Game AI functions
+func moveState(currentPlayer: GameState, currentBoard: [TileState], move: Int) -> Int {
+    var moveValue = 0
+    
+    let newState = makeMove(tile: move, currentPlayer: currentPlayer, board: currentBoard)
+    guard let isWin = checkForWin(currentPlayer: currentPlayer, board: newState) else {return moveValue}
+    
+    switch isWin {
+    case .playerAWin:
+        moveValue = -10
+    case .playerBWin:
+        moveValue = 10
+    case .draw:
+        moveValue = 0
+    }
+    
+    return moveValue
+}
+
+func possibleMoveValues(currentPlayer: GameState, currentBoard: [TileState]) -> [Int:Int] {
+    var moveValueTable = [Int:Int]()
+    
+    for (index, tile) in currentBoard.enumerated() {
+        if tile == .notSelected {
+            let moveValue = moveState(currentPlayer: currentPlayer, currentBoard: currentBoard, move: tile.hashValue)
+            moveValueTable[index] = moveValue
+        }
+    }
+    
+    return moveValueTable
+}
+
+func makeAIMove(currentPlayer: GameState, board: [TileState]) -> [TileState] {
+    var newBoard = board
+    
+    let possibleImmediateWinValues = possibleMoveValues(currentPlayer: .playerB, currentBoard: board)
+    let possibleImmediateLossValues = possibleMoveValues(currentPlayer: .playerA, currentBoard: board)
+    
+    if let immediateWin = possibleImmediateWinValues.filter({$1 == 10}).first {
+        newBoard = makeMove(tile: immediateWin.key, currentPlayer: currentPlayer, board: board)
+    } else if let immediateLoss = possibleImmediateLossValues.filter({$1 == -10}).first {
+        newBoard = makeMove(tile: immediateLoss.key, currentPlayer: currentPlayer, board: board)
+    } else {
+        let possibleMoves = Array(possibleImmediateWinValues.keys)
+        newBoard = makeMove(tile: possibleMoves[Int(arc4random_uniform(UInt32(possibleMoves.count)))], currentPlayer: currentPlayer, board: board)
+    }
+    
+//    for (move, value) in possibleImmediateWinValues {
+//        if value == 10 {
+//            newBoard = makeMove(tile: move, currentPlayer: currentPlayer, board: board)
+//        }
+//    }
+
+    return newBoard
+}
