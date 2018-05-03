@@ -134,16 +134,16 @@ func checkForWin(currentPlayer: GameState, board: [TileState]) -> GameEndState? 
 
 // Game AI functions
 func moveState(currentPlayer: GameState, currentBoard: [TileState], move: Int) -> Int {
-    var moveValue = 0
+    var moveValue: Int
     
-    let newState = makeMove(tile: move, currentPlayer: currentPlayer, board: currentBoard)
-    guard let isWin = checkForWin(currentPlayer: currentPlayer, board: newState) else {return moveValue}
+    let newState = makeMove(tile: move, currentPlayer: currentPlayer, board: currentBoard) // This doesn't set the new board even though it should
+    guard let isWin = checkForWin(currentPlayer: currentPlayer, board: newState) else {return 0}
     
     switch isWin {
     case .playerAWin:
-        moveValue = -10
+        moveValue = -1 // This never executes because newState doesn't update the board by making a move
     case .playerBWin:
-        moveValue = 10
+        moveValue = 1
     case .draw:
         moveValue = 0
     }
@@ -164,26 +164,23 @@ func possibleMoveValues(currentPlayer: GameState, currentBoard: [TileState]) -> 
     return moveValueTable
 }
 
-func makeAIMove(currentPlayer: GameState, board: [TileState]) -> [TileState] {
+func makeAIMove(currentPlayer: GameState, board: [TileState]) -> (board: [TileState], move: Int) {
     var newBoard = board
+    var move:Int
     
     let possibleImmediateWinValues = possibleMoveValues(currentPlayer: .playerB, currentBoard: board)
     let possibleImmediateLossValues = possibleMoveValues(currentPlayer: .playerA, currentBoard: board)
     
-    if let immediateWin = possibleImmediateWinValues.filter({$1 == 10}).first {
-        newBoard = makeMove(tile: immediateWin.key, currentPlayer: currentPlayer, board: board)
-    } else if let immediateLoss = possibleImmediateLossValues.filter({$1 == -10}).first {
-        newBoard = makeMove(tile: immediateLoss.key, currentPlayer: currentPlayer, board: board)
+    if let immediateWin = possibleImmediateWinValues.filter({$1 == 1}).first {
+        move = immediateWin.key
+    } else if let immediateLoss = possibleImmediateLossValues.filter({$1 == -1}).first {
+        move = immediateLoss.key
     } else {
         let possibleMoves = Array(possibleImmediateWinValues.keys)
-        newBoard = makeMove(tile: possibleMoves[Int(arc4random_uniform(UInt32(possibleMoves.count)))], currentPlayer: currentPlayer, board: board)
+        move = possibleMoves[Int(arc4random_uniform(UInt32(possibleMoves.count)))]
     }
     
-//    for (move, value) in possibleImmediateWinValues {
-//        if value == 10 {
-//            newBoard = makeMove(tile: move, currentPlayer: currentPlayer, board: board)
-//        }
-//    }
+    newBoard = makeMove(tile: move, currentPlayer: currentPlayer, board: board)
 
-    return newBoard
+    return (newBoard, move)
 }

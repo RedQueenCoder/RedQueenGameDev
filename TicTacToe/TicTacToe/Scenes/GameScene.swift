@@ -43,37 +43,47 @@ class GameScene: SKScene {
         let scaleUpAction = SKAction.scale(to: largeNodeSize, duration: 0.5)
         let scaleDownAction = SKAction.scale(to: nodeSize, duration: 0.25)
         let soundEffect = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
+        let pauseAction = SKAction.wait(forDuration: 2.0)
         let scaleSequence = SKAction.sequence([scaleUpAction, soundEffect, scaleDownAction])
         let actionGroup = SKAction.group([fadeAction, scaleSequence])
+        let aiActionGroup = SKAction.sequence([pauseAction, actionGroup])
         
         if board[tiles.index(of: node)!] == .notSelected {
-            switch currentPlayer {
-            case .playerA:
-                let playerTile = SKSpriteNode(imageNamed: "pastry_donut_320")
-                playerTile.setScale(0)
-                playerTile.position = spritePosition
-                node.addChild(playerTile)
-                playerTile.run(actionGroup)
-                board[tiles.index(of: node)!] = .playerA
-            case .playerB:
-                let playerTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
-                playerTile.setScale(0)
-                playerTile.position = spritePosition
-                node.addChild(playerTile)
-                playerTile.run(actionGroup)
-                board[tiles.index(of: node)!] = .playerB
-            case .notPlaying:
-                node.color = UIColor.white
-                board[tiles.index(of: node)!] = .notSelected
-            }
-        }
-        
-        if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
-            label.text = isWin.rawValue
             isUserInteractionEnabled = false
-        } else {
-            currentPlayer = switchPlayer(currentPlayer: currentPlayer)
-            label.text = "\(currentPlayer.rawValue)'s Turn"
+            
+            // Human player's turn
+            let playerTile = SKSpriteNode(imageNamed: "pastry_donut_320")
+            playerTile.setScale(0)
+            playerTile.position = spritePosition
+            node.addChild(playerTile)
+            playerTile.run(actionGroup)
+            board[tiles.index(of: node)!] = .playerA
+            
+            // Check for Human Player Win
+            if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
+                label.text = isWin.rawValue
+                return
+            } else {
+                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+                label.text = "\(currentPlayer.rawValue)'s Turn"
+            }
+            
+            // AI's turn
+            let aimove = makeAIMove(currentPlayer: currentPlayer, board: board)
+            board = aimove.board
+            let aiTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
+            aiTile.setScale(0)
+            aiTile.position = spritePosition
+            tiles[aimove.move].addChild(aiTile)
+            aiTile.run(aiActionGroup)
+            
+            if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
+                label.text = isWin.rawValue
+            } else {
+                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
+                label.text = "\(currentPlayer.rawValue)'s Turn"
+                isUserInteractionEnabled = true
+            }
         }
     }
     

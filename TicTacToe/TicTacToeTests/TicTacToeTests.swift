@@ -273,4 +273,86 @@ class TicTacToeTests: XCTestCase {
         XCTAssertNil(firstMove)
     }
     
+    // AI Tests
+    func testMoveState() {
+        let playerA = GameState.playerA
+        let playerB = GameState.playerB
+        
+        let selectedA = TileState.playerA
+        let selectedB = TileState.playerB
+        let notSelected = TileState.notSelected
+        
+        let playerAWinBoard:[TileState] = [selectedA, selectedA, notSelected,
+                                           notSelected, selectedB, notSelected,
+                                           notSelected, notSelected, notSelected]
+        
+        let playerAWinState = moveState(currentPlayer: playerA, currentBoard: playerAWinBoard, move: 2)
+        XCTAssertEqual(playerAWinState, -1)
+        
+        let playerBWinBoard:[TileState] = [notSelected, notSelected, notSelected,
+                                           notSelected, selectedB, notSelected,
+                                           selectedB, selectedA, selectedA]
+        
+        let playerBWinState = moveState(currentPlayer: playerB, currentBoard: playerBWinBoard, move: 2)
+        XCTAssertEqual(playerBWinState, 1)
+        
+        let neitherWinNorLoseBoard:[TileState] = [notSelected, notSelected, notSelected,
+                                                  notSelected, notSelected, notSelected,
+                                                  notSelected, notSelected, notSelected]
+        
+        let newBoardState = moveState(currentPlayer: playerA, currentBoard: neitherWinNorLoseBoard, move: 4)
+        XCTAssertEqual(newBoardState, 0)
+    }
+    
+    /*
+    func testMoveValues() {
+        let playerA = GameState.playerA
+        let playerB = GameState.playerB
+        
+        let selectedA = TileState.playerA
+        let selectedB = TileState.playerB
+        let notSelected = TileState.notSelected
+     
+        let playerAWinBoard:[TileState] = [selectedA, selectedA, notSelected,
+                                           notSelected, selectedB, notSelected,
+                                           notSelected, notSelected, notSelected]
+        
+        let playerAWinDictionary = possibleMoveValues(currentPlayer: playerA, currentBoard: playerAWinBoard)
+        let playerBLoseDictionary = possibleMoveValues(currentPlayer: playerB, currentBoard: playerAWinBoard)
+        
+        XCTAssertEqual(playerAWinDictionary.count, 6)
+        XCTAssertEqual(playerBLoseDictionary.count, 6)
+        
+        XCTAssertEqual(playerAWinDictionary[2], -1) // This should be -1 but it is coming back 0
+        XCTAssertEqual(playerAWinDictionary[3], 0)
+        XCTAssertEqual(playerAWinDictionary[5], 0)
+        XCTAssertEqual(playerAWinDictionary[6], 0)
+        XCTAssertEqual(playerAWinDictionary[7], 0)
+        XCTAssertEqual(playerAWinDictionary[8], 0)
+        
+        let playerAWinBoard:[TileState] = [selectedA, selectedA, notSelected,
+                                           selectedB, selectedB, selectedA,
+                                           selectedB, selectedB, selectedA]
+        
+        let playerAWinDictionary = possibleMoveValues(currentPlayer: playerA, currentBoard: playerAWinBoard)
+        XCTAssertEqual(playerAWinDictionary.count, 1)
+        XCTAssertEqual(playerAWinDictionary[2], -1)
+    }
+    */
+    
 }
+
+/*
+ func possibleMoveValues(currentPlayer: GameState, currentBoard: [TileState]) -> [Int:Int] {
+ var moveValueTable = [Int:Int]()
+ 
+ for (index, tile) in currentBoard.enumerated() {
+ if tile == .notSelected {
+ let moveValue = moveState(currentPlayer: currentPlayer, currentBoard: currentBoard, move: tile.hashValue)
+ moveValueTable[index] = moveValue
+ }
+ }
+ 
+ return moveValueTable
+ }
+*/
