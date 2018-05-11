@@ -26,6 +26,12 @@ enum GameEndState: String {
     case draw = "Draw!"
 }
 
+enum GameVariation {
+    case normal
+    case reversed
+    case swap
+}
+
 // Reset Board
 func resetBoard() -> [TileState] {
     var board = [TileState]()
@@ -156,7 +162,7 @@ func possibleMoveValues(currentPlayer: GameState, currentBoard: [TileState]) -> 
     
     for (index, tile) in currentBoard.enumerated() {
         if tile == .notSelected {
-            let moveValue = moveState(currentPlayer: currentPlayer, currentBoard: currentBoard, move: tile.hashValue)
+            let moveValue = moveState(currentPlayer: currentPlayer, currentBoard: currentBoard, move: index)
             moveValueTable[index] = moveValue
         }
     }

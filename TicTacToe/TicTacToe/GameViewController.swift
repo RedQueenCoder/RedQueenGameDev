@@ -12,7 +12,7 @@ import GameplayKit
 
 class GameViewController: UIViewController {
     
-    var scene: GameScene!
+    var scene: MainMenuScene!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,10 +20,9 @@ class GameViewController: UIViewController {
         let skView = view as! SKView
         skView.isMultipleTouchEnabled = false
         
-        scene = GameScene(size: skView.bounds.size)
-        scene.scaleMode = .aspectFill
-        
-        skView.presentScene(scene)
+        if let scene = SKScene(fileNamed: "MainMenuScene") {
+            skView.presentScene(scene)
+        }
             
         skView.ignoresSiblingOrder = true
         skView.showsFPS = true
@@ -32,14 +31,6 @@ class GameViewController: UIViewController {
 
     override var shouldAutorotate: Bool {
         return true
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            return .allButUpsideDown
-        } else {
-            return .all
-        }
     }
 
     override func didReceiveMemoryWarning() {

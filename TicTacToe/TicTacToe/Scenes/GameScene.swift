@@ -43,10 +43,8 @@ class GameScene: SKScene {
         let scaleUpAction = SKAction.scale(to: largeNodeSize, duration: 0.5)
         let scaleDownAction = SKAction.scale(to: nodeSize, duration: 0.25)
         let soundEffect = SKAction.playSoundFileNamed("pop.wav", waitForCompletion: false)
-        let pauseAction = SKAction.wait(forDuration: 2.0)
         let scaleSequence = SKAction.sequence([scaleUpAction, soundEffect, scaleDownAction])
         let actionGroup = SKAction.group([fadeAction, scaleSequence])
-        let aiActionGroup = SKAction.sequence([pauseAction, actionGroup])
         
         if board[tiles.index(of: node)!] == .notSelected {
             isUserInteractionEnabled = false
@@ -62,28 +60,39 @@ class GameScene: SKScene {
             // Check for Human Player Win
             if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
                 label.text = isWin.rawValue
-                return
+                let gameOverScene = GameOverScene(size: size, endState: isWin)
+                gameOverScene.scaleMode = scaleMode
+                
+                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                view?.presentScene(gameOverScene, transition: reveal)
             } else {
                 currentPlayer = switchPlayer(currentPlayer: currentPlayer)
-                label.text = "\(currentPlayer.rawValue)'s Turn"
+                label.text = "Player B's Turn"
             }
             
             // AI's turn
-            let aimove = makeAIMove(currentPlayer: currentPlayer, board: board)
-            board = aimove.board
-            let aiTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
-            aiTile.setScale(0)
-            aiTile.position = spritePosition
-            tiles[aimove.move].addChild(aiTile)
-            aiTile.run(aiActionGroup)
-            
-            if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
-                label.text = isWin.rawValue
-            } else {
-                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
-                label.text = "\(currentPlayer.rawValue)'s Turn"
-                isUserInteractionEnabled = true
-            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                let aimove = makeAIMove(currentPlayer: self.currentPlayer, board: self.board)
+                self.board = aimove.board
+                let aiTile = SKSpriteNode(imageNamed: "pastry_starcookie02_320")
+                aiTile.setScale(0)
+                aiTile.position = spritePosition
+                self.tiles[aimove.move].addChild(aiTile)
+                aiTile.run(actionGroup)
+
+                if let isWin = checkForWin(currentPlayer: self.currentPlayer, board: self.board) {
+                    self.label.text = isWin.rawValue
+                    let gameOverScene = GameOverScene(size: self.size, endState: isWin)
+                    gameOverScene.scaleMode = self.scaleMode
+                    
+                    let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                    self.view?.presentScene(gameOverScene, transition: reveal)
+                } else {
+                    self.currentPlayer = switchPlayer(currentPlayer: self.currentPlayer)
+                    self.label.text = "Player A's Turn"
+                    self.isUserInteractionEnabled = true
+                }
+           }
         }
     }
     
@@ -143,8 +152,6 @@ class GameScene: SKScene {
         board = resetBoard()
         currentPlayer = switchPlayer(currentPlayer: currentPlayer)
         label.text = "\(currentPlayer.rawValue)'s Turn"
-        
-        run(SKAction.playSoundFileNamed("Carpe Diem.mp3", waitForCompletion: false))
     }
     
     required init?(coder aDecoder: NSCoder) {

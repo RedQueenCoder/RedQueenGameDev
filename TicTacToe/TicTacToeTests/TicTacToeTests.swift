@@ -304,7 +304,7 @@ class TicTacToeTests: XCTestCase {
         XCTAssertEqual(newBoardState, 0)
     }
     
-    /*
+    
     func testMoveValues() {
         let playerA = GameState.playerA
         let playerB = GameState.playerB
@@ -330,15 +330,15 @@ class TicTacToeTests: XCTestCase {
         XCTAssertEqual(playerAWinDictionary[7], 0)
         XCTAssertEqual(playerAWinDictionary[8], 0)
         
-        let playerAWinBoard:[TileState] = [selectedA, selectedA, notSelected,
-                                           selectedB, selectedB, selectedA,
-                                           selectedB, selectedB, selectedA]
-        
-        let playerAWinDictionary = possibleMoveValues(currentPlayer: playerA, currentBoard: playerAWinBoard)
-        XCTAssertEqual(playerAWinDictionary.count, 1)
-        XCTAssertEqual(playerAWinDictionary[2], -1)
+//        let playerAWinBoard:[TileState] = [selectedA, selectedA, notSelected,
+//                                           selectedB, selectedB, selectedA,
+//                                           selectedB, selectedB, selectedA]
+//        
+//        let playerAWinDictionary = possibleMoveValues(currentPlayer: playerA, currentBoard: playerAWinBoard)
+//        XCTAssertEqual(playerAWinDictionary.count, 1)
+//        XCTAssertEqual(playerAWinDictionary[2], -1)
     }
-    */
+    
     
 }
 
