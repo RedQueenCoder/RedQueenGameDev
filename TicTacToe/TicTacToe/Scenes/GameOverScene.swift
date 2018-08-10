@@ -10,7 +10,7 @@ import Foundation
 import SpriteKit
 
 class GameOverScene: SKScene {
-    let endState:GameEndState // Rethink this! It could also be a draw!
+    let endState:GameEndState
     let background = SKSpriteNode(imageNamed: "bg_ipad_portrait")
     let label = SKLabelNode(fontNamed: "Noteworthy-Bold")
     var iconNode = SKSpriteNode()
@@ -59,7 +59,6 @@ class GameOverScene: SKScene {
             label.text = "Draw"
         }
         
-//        let spritePosition = CGPoint(x: background.size.width / 2, y: background.size.height / 2)
         let spritePosition = CGPoint(x: 0.0, y: 0.0)
         let spriteSize = CGSize(width: 320, height: 320)
         
@@ -75,8 +74,6 @@ class GameOverScene: SKScene {
         iconNode.position = spritePosition
         iconNode.zPosition = 10
         addChild(iconNode)
-        print(spritePosition) // Why do these print twice?
-        print("Sprite size: \(spriteSize)")
         iconNode.run(actionGroup)
         
         let wait = SKAction.wait(forDuration: 5.0)

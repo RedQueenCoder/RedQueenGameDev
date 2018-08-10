@@ -55,7 +55,7 @@ class GameScene: SKScene {
             playerTile.position = spritePosition
             node.addChild(playerTile)
             playerTile.run(actionGroup)
-            board[tiles.index(of: node)!] = .playerA
+            board[tiles.index(of: node)!] = .playerA(swap:1)
             
             // Check for Human Player Win
             if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {

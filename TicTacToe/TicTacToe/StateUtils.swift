@@ -14,10 +14,39 @@ enum GameState: String {
     case playerB = "Player B"
 }
 
-enum TileState {
+
+//enum TileState {
+//    case notSelected
+//    case playerA
+//    case playerB
+//}
+
+
+enum TileState: Equatable {
     case notSelected
-    case playerA
-    case playerB
+    case playerA(swap:Int)
+    case playerB(swap:Int)
+    
+    func swap() -> Int {
+        switch (self) {
+        case .notSelected: return 0
+        case let .playerA(currentSwap): return currentSwap
+        case let .playerB(currentSwap): return currentSwap
+        }
+    }
+    
+    static public func == (lhs: TileState, rhs: TileState) -> Bool {
+        switch (lhs, rhs) {
+        case (.playerA, .playerA):
+            return true
+        case (.playerB, .playerB):
+            return true
+        case (.notSelected, .notSelected):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 enum GameEndState: String {
@@ -62,9 +91,9 @@ func makeMove(tile: Int, currentPlayer: GameState, board: [TileState]) -> [TileS
     
     switch currentPlayer {
     case .playerA:
-        newBoard[tile] = .playerA
+        newBoard[tile] = .playerA(swap:board[tile].swap() + 1)
     case .playerB:
-        newBoard[tile] = .playerB
+        newBoard[tile] = .playerB(swap:board[tile].swap() + 1)
     case .notPlaying:
         newBoard[tile] = .notSelected
     }
@@ -78,10 +107,10 @@ func checkForWin(currentPlayer: GameState, board: [TileState]) -> GameEndState? 
     var gameEnd:GameEndState
     
     if currentPlayer == .playerA {
-        requiredState = .playerA
+        requiredState = .playerA(swap: 1)
         gameEnd = .playerAWin
     } else if currentPlayer == .playerB {
-        requiredState = .playerB
+        requiredState = .playerB(swap: 1)
         gameEnd = .playerBWin
     } else {
         return nil
