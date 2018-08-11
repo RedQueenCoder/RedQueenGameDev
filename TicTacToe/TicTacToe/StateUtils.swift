@@ -103,9 +103,10 @@ func makeMove(tile: Int, currentPlayer: GameState, board: [TileState]) -> [TileS
 
 // Check for Win
 func checkForWin(currentPlayer: GameState, board: [TileState]) -> GameEndState? {
+    // We don't care what variation is currently being played. This is dealt with elsewhere
     var requiredState:TileState
     var gameEnd:GameEndState
-    
+
     if currentPlayer == .playerA {
         requiredState = .playerA(swap: 1)
         gameEnd = .playerAWin
@@ -115,6 +116,8 @@ func checkForWin(currentPlayer: GameState, board: [TileState]) -> GameEndState? 
     } else {
         return nil
     }
+    
+    
     
     // Three across the top
     if board[0] == requiredState && board[1] == requiredState && board[2] == requiredState {
