@@ -17,7 +17,7 @@ class TypeChoiceMenu: SKScene {
     // Check for node type and pass into the initializer
     func sceneTapped(_ type: GameVariation) {
         // Update GameScene init for game type
-        let myScene = GameScene(size: size)
+        let myScene = GameScene(size: size, variation: type)
         myScene.scaleMode = scaleMode
         let reveal = SKTransition.doorway(withDuration: 1.5)
         view?.presentScene(myScene, transition: reveal)

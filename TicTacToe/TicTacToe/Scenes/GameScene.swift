@@ -14,8 +14,8 @@ class GameScene: SKScene {
     // Model Properties
     var board:[TileState] = []
     var currentPlayer:GameState = .notPlaying
-    var gameVariation: GameVariation
-    let swapLimit = 3
+    var gameVariation: GameVariation = .normal
+    var swapLimit = 1
     
     // View Properties
     let boardLayer = SKSpriteNode()
@@ -48,10 +48,8 @@ class GameScene: SKScene {
         let scaleSequence = SKAction.sequence([scaleUpAction, soundEffect, scaleDownAction])
         let actionGroup = SKAction.group([fadeAction, scaleSequence])
         
-        // Check if the number of swaps is available
-        // Not sure how to pull it out of the data structure
-        // TODO: Figure out how to check number of swaps and verify it's fewer than swapLimit
-        if board[tiles.index(of: node)!] == .notSelected /*|| board[tiles.index(of: node)!] == .playerA(swap: 3)*/ {
+        let tile = board[tiles.index(of: node)!]
+        if tile == .notSelected || tile.swap() < swapLimit {
             isUserInteractionEnabled = false
             
             // Human player's turn
@@ -60,7 +58,7 @@ class GameScene: SKScene {
             playerTile.position = spritePosition
             node.addChild(playerTile)
             playerTile.run(actionGroup)
-            board[tiles.index(of: node)!] = .playerA(swap:1)
+            board[tiles.index(of: node)!] = .playerA(swap: tile.swap() + 1)
             
             switch gameVariation {
             case .normal:
@@ -98,26 +96,9 @@ class GameScene: SKScene {
                     let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
                     view?.presentScene(gameOverScene, transition: reveal)
                 } else {
-                    // TODO: Increment the swap number
                     currentPlayer = switchPlayer(currentPlayer: currentPlayer)
                     label.text = "Player B's Turn"
                 }
-            }
-            
-            
-            
-            // Check for Human Player Win
-            // Need to deal with variations here.
-            if let isWin = checkForWin(currentPlayer: currentPlayer, board: board) {
-                label.text = isWin.rawValue
-                let gameOverScene = GameOverScene(size: size, endState: isWin)
-                gameOverScene.scaleMode = scaleMode
-                
-                let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-                view?.presentScene(gameOverScene, transition: reveal)
-            } else {
-                currentPlayer = switchPlayer(currentPlayer: currentPlayer)
-                label.text = "Player B's Turn"
             }
             
             // AI's turn
@@ -130,18 +111,49 @@ class GameScene: SKScene {
                 aiTile.position = spritePosition
                 self.tiles[aimove.move].addChild(aiTile)
                 aiTile.run(actionGroup)
-
-                if let isWin = checkForWin(currentPlayer: self.currentPlayer, board: self.board) {
-                    self.label.text = isWin.rawValue
-                    let gameOverScene = GameOverScene(size: self.size, endState: isWin)
-                    gameOverScene.scaleMode = self.scaleMode
-                    
-                    let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
-                    self.view?.presentScene(gameOverScene, transition: reveal)
-                } else {
-                    self.currentPlayer = switchPlayer(currentPlayer: self.currentPlayer)
-                    self.label.text = "Player A's Turn"
-                    self.isUserInteractionEnabled = true
+                
+                switch self.gameVariation {
+                case .normal:
+                    if let isWin = checkForWin(currentPlayer: self.currentPlayer, board: self.board) {
+                        self.label.text = isWin.rawValue
+                        let gameOverScene = GameOverScene(size: self.size, endState: isWin)
+                        gameOverScene.scaleMode = self.scaleMode
+                        
+                        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                        self.view?.presentScene(gameOverScene, transition: reveal)
+                    } else {
+                        self.currentPlayer = switchPlayer(currentPlayer: self.currentPlayer)
+                        self.label.text = "Player A's Turn"
+                        self.isUserInteractionEnabled = true
+                    }
+                case .reversed:
+                    // Need to indicate a win is actually a loss
+                    if let isWin = checkForWin(currentPlayer: self.currentPlayer, board: self.board) {
+                        let gameEndState:GameEndState = .playerAWin
+                        self.label.text = gameEndState.rawValue
+                        let gameOverScene = GameOverScene(size: self.size, endState: isWin)
+                        gameOverScene.scaleMode = self.scaleMode
+                        
+                        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                        self.view?.presentScene(gameOverScene, transition: reveal)
+                    } else {
+                        self.currentPlayer = switchPlayer(currentPlayer: self.currentPlayer)
+                        self.label.text = "Player A's Turn"
+                        self.isUserInteractionEnabled = true
+                    }
+                case .swap:
+                    if let isWin = checkForWin(currentPlayer: self.currentPlayer, board: self.board) {
+                        self.label.text = isWin.rawValue
+                        let gameOverScene = GameOverScene(size: self.size, endState: isWin)
+                        gameOverScene.scaleMode = self.scaleMode
+                        
+                        let reveal = SKTransition.flipHorizontal(withDuration: 0.5)
+                        self.view?.presentScene(gameOverScene, transition: reveal)
+                    } else {
+                        self.currentPlayer = switchPlayer(currentPlayer: self.currentPlayer)
+                        self.label.text = "Player A's Turn"
+                        self.isUserInteractionEnabled = true
+                    }
                 }
            }
         }
@@ -149,6 +161,13 @@ class GameScene: SKScene {
     
     init(size: CGSize, variation: GameVariation) {
         gameVariation = variation
+        
+        if variation == .swap {
+            swapLimit = 3
+        } else {
+            swapLimit = 1
+        }
+        
         super.init(size: size)
         isUserInteractionEnabled = true
         
@@ -206,7 +225,6 @@ class GameScene: SKScene {
         label.text = "\(currentPlayer.rawValue)'s Turn"
     }
     
-    // TODO: Debug the initializer on this class
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
